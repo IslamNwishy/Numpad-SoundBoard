@@ -1,6 +1,7 @@
 from os import listdir, mkdir
 from os.path import isfile, join, exists
 import tkinter as tk
+from tkinter.ttk import *
 from functools import partial
 from pygame import mixer
 import keyboard
@@ -31,31 +32,36 @@ def start():
 
 
 def create_widgets(root, SoundFiles):
+    style = Style()
+    style.configure('TButton', font=('calibri', 10),
+                    borderwidth='4')
+
     if len(SoundFiles) <= 0:
         nofile = tk.Label(
             root, text="No audio files found, please add some audio in sounds folder and try again")
         nofile.grid(column=1)
 
+    label_frame = tk.LabelFrame(root, text='Sounds', relief=tk.GROOVE, bd=2)
+    label_frame.pack(expand=1, fill='both', padx=10, pady=10)
     for index, val in enumerate(SoundFiles):
         if index == 9:  # the 9 numbers are mapped
             break
         key = index + 1
         keyboard.add_hotkey(Keys[key], key_pressed,
                             args=[val])
-        btn = tk.Button(root, text=str(key) + "- " + val.split('.', 1)[0], command=partial(
+
+        btn = Button(label_frame, text=str(key) + "- " + val.split('.', 1)[0], style='TButton', command=partial(
             play, ("sounds/" + val)))
-        btn.grid(column=1)
+        btn.pack(side=tk.TOP, padx=10, pady=10, expand=1)
 
-    quit = tk.Button(root, text="QUIT", fg="red",
-                     command=root.destroy)
+    quit = Button(root, text="QUIT", style='TButton',
+                  command=root.destroy)
 
-    quit.grid(column=1)
+    quit.pack(side=tk.TOP, padx=10, pady=10, expand=1, fill=tk.X)
 
     stat = tk.Label(root, text="Use Numlock to enable and disable the board")
     keyboard.add_hotkey("numlock", numUpdate, args=[stat])
-    stat.grid(column=2)
-    root.grid_rowconfigure(1, weight=1)
-    root.grid_columnconfigure(1, weight=1)
+    stat.pack()
 
 
 def play(path):
