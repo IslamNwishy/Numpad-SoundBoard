@@ -2,3 +2,4 @@ __pycache__/
 venv/
 build/
 SoundBoard.spec
+dist/sounds/
