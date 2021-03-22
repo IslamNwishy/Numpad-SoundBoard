@@ -1,6 +1,6 @@
 # Numpad Soundboard
 
-A program that maps the numpad to any sounds of your choice to be used as a simple soundboard.
+A program that maps the numpad to any sounds of your choice to be used as a simple soundboard. (Direct Download [Here](https://downgit.github.io/#/home?url=https://github.com/IslamNwishy/Numpad-SoundBoard/tree/main/dist))
 
 ## How to use it
 
