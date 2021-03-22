@@ -117,7 +117,6 @@ class SoundBoard(tk.Frame):
 
     def profileConrol(self, isNext, e):
         if len(self.profiles) > 1 and e.is_keypad and keyboard.is_pressed(e.name):
-            keyboard.block_key(e.scan_code)
             if isNext:
                 self.ProfileNum += 1
                 self.ProfileNum %= len(self.profiles)
