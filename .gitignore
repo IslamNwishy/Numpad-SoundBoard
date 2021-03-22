@@ -3,3 +3,5 @@ venv/
 build/
 SoundBoard.spec
 dist/sounds/
+sounds/
+.vscode/settings.json
