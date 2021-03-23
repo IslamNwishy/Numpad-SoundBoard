@@ -3,12 +3,12 @@ sys.path.append('..')
 from os import listdir, mkdir
 from os.path import isfile, join, exists, isdir
 import tkinter as tk
-from tkinter.ttk import *
+from tkinter.ttk import Button, Style
 from functools import partial
 from typing import Text
 from pygame import mixer
 import keyboard
-import ctypes
+from ctypes import WinDLL
 
 
 class SoundBoard(tk.Frame):
@@ -19,16 +19,18 @@ class SoundBoard(tk.Frame):
         self.soundPlaying = ""
         self.Keys = [82, 79, 80, 81, 75, 76,
                      77, 71, 72, 73]  # numpad codes 0-9
-        self.user32 = ctypes.WinDLL('user32')  # to check on the numlock state
+        self.user32 = WinDLL('user32')  # to check on the numlock state
         self.profiles = {}
         self.ProfileNum = 0
         self.path = "sounds/"
+        self.savedBtns = {}
         self.start()
 
     # get all files in sounds directory
 
-    def get_files(self, path):
+    def get_files(self):
         keyboard.hook(self.print_pressed_keys)
+        path = self.path
         if not exists(path):
             mkdir(path)
         self.profileNames = [f for f in listdir(path) if isdir(join(path, f))]
@@ -50,7 +52,7 @@ class SoundBoard(tk.Frame):
     def start(self):
 
         mixer.init()
-        self.get_files("sounds/")
+        self.get_files()
 
         self.create_widgets()
 
@@ -61,10 +63,23 @@ class SoundBoard(tk.Frame):
 
         quit = Button(self, text="QUIT", style='TButton',
                       command=self.master.destroy)
-        self.stat = tk.Label(
+        stat = tk.Label(
             self, text="Use Numlock to enable and disable the board")
-        self.stat.pack(side=tk.BOTTOM)
+        stat.pack(side=tk.BOTTOM)
         quit.pack(side=tk.BOTTOM, padx=10, pady=10, expand=1, fill=tk.X)
+        self.savedBtns["numState"] = stat
+
+        if len(self.profiles) > 1:
+            controls = tk.LabelFrame(
+                self, text="Controls", relief=tk.GROOVE, bd=2)
+            controls.pack(side=tk.TOP, expand=1,
+                          fill=tk.BOTH, padx=10, pady=20)
+            nextbtn = Button(controls, text="Next Profile", style='TButton',
+                             command=partial(self._profileControl, True))
+            nextbtn.pack(side=tk.RIGHT, padx=10, pady=5, expand=1)
+            prevbtn = Button(controls, text="Prev Profile", style='TButton',
+                             command=partial(self._profileControl, False))
+            prevbtn.pack(side=tk.LEFT, padx=10, pady=10, expand=1)
 
         self.create_buttons()
 
@@ -74,7 +89,7 @@ class SoundBoard(tk.Frame):
         SoundFiles = self.profiles[self.profileNames[self.ProfileNum]]
         self.label_frame = tk.LabelFrame(
             self, text=self.profileNames[self.ProfileNum], relief=tk.GROOVE, bd=2)
-        self.label_frame.pack(expand=1, fill='both', padx=10, pady=10)
+        self.label_frame.pack(expand=1, fill=tk.BOTH, padx=10, pady=10)
         if len(SoundFiles) <= 0:
             nofile = tk.Label(
                 self.label_frame, text="This profile is empty. Add sound in the profile folder and try again")
@@ -106,7 +121,8 @@ class SoundBoard(tk.Frame):
         keyboard.hook_key(self.Keys[0], self.muteAll)
         keyboard.hook_key('+', partial(self.profileConrol, True))
         keyboard.hook_key('-', partial(self.profileConrol, False))
-        keyboard.add_hotkey("numlock", self.numUpdate, args=[self.stat])
+        keyboard.add_hotkey("numlock", self.numUpdate, args=[
+                            self.savedBtns["numState"]])
 
     def numUpdate(self, stat):
         numlock = self.user32.GetKeyState(0x90)
@@ -115,20 +131,22 @@ class SoundBoard(tk.Frame):
         else:
             stat.configure(text="ON", fg="green")
 
+    def _profileControl(self, isNext):
+        if isNext:
+            self.ProfileNum += 1
+            self.ProfileNum %= len(self.profiles)
+
+        else:
+            self.ProfileNum -= 1
+            self.ProfileNum %= len(self.profiles)
+
+        self.path = join(
+            "sounds/", self.profileNames[self.ProfileNum] + "/")
+        self.update_window()
+
     def profileConrol(self, isNext, e):
         if len(self.profiles) > 1 and e.is_keypad and keyboard.is_pressed(e.name):
-            if isNext:
-                self.ProfileNum += 1
-                self.ProfileNum %= len(self.profiles)
-                self.path = join(
-                    "sounds/", self.profileNames[self.ProfileNum] + "/")
-
-            else:
-                self.ProfileNum -= 1
-                self.ProfileNum %= len(self.profiles)
-                self.path = join(
-                    "sounds/", self.profileNames[self.ProfileNum] + "/")
-            self.update_window()
+            self._profileControl(isNext)
 
     def key_pressed(self, sound, e):
         numlock = self.user32.GetKeyState(0x90)
@@ -144,6 +162,6 @@ class SoundBoard(tk.Frame):
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("SoundBoard")
-    root.minsize(200, 100)
+    root.minsize(250, 100)
     SoundBoard(root)
     root.mainloop()

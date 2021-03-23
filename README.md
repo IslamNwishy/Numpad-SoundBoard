@@ -13,6 +13,9 @@ A program that maps the numpad to any sounds of your choice to be used as a simp
 - Number 0 is reserved for stoping any sound playing
 - Pressing on a key while its mapped sound is playing will stop the sound (Like pressing 0)
 - Pressing a key while its sound is not playing will stop any sound playing to play its own.
+- You can set sound profiles by creating a folder inside the sounds folder and naming it whatever you want and putting sounds inside of it
+- The program will ignore any audio in the sounds folder root when sound profiles are used (making folders inside the sounds folder)
+- you can switch between sound profiles with + and - or using the controls in the app (controls only shows if their are more than 1 sound profile made)
 
 ## How to run the code
 
@@ -22,10 +25,14 @@ A program that maps the numpad to any sounds of your choice to be used as a simp
 - use `pip install -r requirements.txt` to install all the nessecary libraries
 - run the python program normally with `python SoundBoard.py` or whichever method you are used to
 
+P.S. I use WinDLL to check if the numlock is on at any giving point so if you're going to use the code on Unix this is probably the thing that will not be compatible. there could be more though, i did not check.
+
 ## What it does not do yet
 
 - There is no way to map sounds to the keys you want other than naming the audio files to be alphabitically the order you want.
 - Have decent interface.
+- does not block the pressed key. not a big issues except in the fact that the numlock does not lock + and - sooooooo. also numlock actually changes the numpad into arrow keys so that might be something to notice too.
+- not all mp3 files will work, most of them do but some don't (pygame music limitation). I do not check for compatibility before playing a sound so the program might crash if the audio is not supported. do not panic just remove that audio and restart the program
 
 ## Notes
 
