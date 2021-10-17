@@ -9,7 +9,7 @@ A program that maps the numpad to any sounds of your choice to be used as a simp
 - In the `sounds` folder place your desried sound files, a max of 9 sounds will be used for numpad numbers 1 to 9. (see [pygame mixer music](http://www.pygame.org/docs/ref/music.html) for the supported audio types)
 - Run `SoundBoard.exe` it should map keys on its own and start a simple interface with buttons indecating the number in the numpad that the crossponding sound is mapped to.
 - **You do not have to keep the window in focus** it will capture the keys pressed regardless.
-- The board will only function when the **numlock** is on (when you cannot type numbers)
+- The board will only function when the **numlock** is off (when you cannot type numbers)
 - Number 0 is reserved for stoping any sound playing
 - Pressing on a key while its mapped sound is playing will stop the sound (Like pressing 0)
 - Pressing a key while its sound is not playing will stop any sound playing to play its own.
